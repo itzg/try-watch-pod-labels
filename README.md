@@ -1,0 +1,1 @@
+Trying out the kubernetes client-go to watch and cache pod labels
