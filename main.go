@@ -37,17 +37,15 @@ func main() {
 	podLabels := make(map[string]map[string]string)
 
 	for {
-		select {
-			case e := <- w.ResultChan():
-				pod := e.Object.(*corev1.Pod)
-				switch e.Type {
-				case watch.Added, watch.Modified:
-					podLabels[pod.Name] = pod.Labels
-				case watch.Deleted:
-					delete(podLabels, pod.Name)
-				}
-				printLabels(podLabels)
+		e := <-w.ResultChan()
+		pod := e.Object.(*corev1.Pod)
+		switch e.Type {
+		case watch.Added, watch.Modified:
+			podLabels[pod.Name] = pod.Labels
+		case watch.Deleted:
+			delete(podLabels, pod.Name)
 		}
+		printLabels(podLabels)
 	}
 }
 
