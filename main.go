@@ -48,6 +48,16 @@ func main() {
 	for {
 		// Watch for events
 		e := <-w.ResultChan()
+
+		if e.Type == "" {
+			// empty event type indicates channel closed, so start a fresh watch
+			w, err = podInterface.Watch(metav1.ListOptions{})
+			if err != nil {
+				log.Fatal(err)
+			}
+			continue
+		}
+
 		// can assume a pod resource since the watch was created for that resource type
 		pod := e.Object.(*corev1.Pod)
 
